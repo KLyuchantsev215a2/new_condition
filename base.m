@@ -88,6 +88,14 @@ for n = 1:fix(Time/dt)
       v_n_3_2=v_n_1_2+dt*acc_n_1_2;
       x=1/3*x_old+2/3*x_n_3_2;
       v=1/3*v_old+2/3*v_n_3_2;
+      
+      for i=1:sqn:(sqn*sqn-sqn+1)
+          x(1,i)=X_old(1,i);
+      end
+      for i=sqn:sqn:(sqn*sqn)
+          x(1,i)=X_old(1,i)+X_old(1,i)*(n*dt/Time)^2;
+      end
+      
       U=ComputeEnergy(F,mu,k,N);
       Energy=0;
       U_energy = 0;
