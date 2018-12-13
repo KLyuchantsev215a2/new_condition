@@ -31,16 +31,16 @@ function [mplot]=myplot(x,V,F,N,SIG,l,v,Energy_time,time)%,%n,im,f,map,fig)
 %          ylim([0, 2*l]);
 %          zlim([-0.8, 0.8]);
 %       hold on;
-       errSIG=zeros(1,N);
+       mSIG=zeros(1,N);
        for i = 1:N
-               errSIG(i)=SIG(1,2,i);
+               mSIG(i)=(SIG(1,1,i)^2-SIG(1,1,i)*SIG(2,2,i)+SIG(2,2,i)^2+3*SIG(1,2)^2)^(1/2);
        end
        
         subplot(2,2,4);
-        x_coord =time;
-        y_coord = Energy_time;
+       % x_coord =time;
+        %y_coord = Energy_time;
         plot(x_coord,y_coord);
-%        trisurf(tri,x_coord,y_coord, errSIG);  
+        trisurf(tri,x_coord,y_coord, mSIG);  
 %          xlim([0, 2*l]);
 %          ylim([0, 2*l]);
 %          zlim([-1, 1]);

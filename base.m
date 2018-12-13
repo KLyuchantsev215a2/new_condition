@@ -10,7 +10,7 @@ clear;
 rho_0 =3;
 v_0 = 1;
 Time = 10;
-sqn=5;
+sqn=4;
 l=1;
 N=sqn*sqn;
 S=l*l;
