@@ -9,8 +9,8 @@ clear;
 
 rho_0 =3;
 v_0 = 1;
-Time = 10;
-sqn=4;
+Time = 1.5;
+sqn=5;
 l=1;
 N=sqn*sqn;
 S=l*l;
@@ -23,10 +23,10 @@ E=9*k*mu/(3*k+mu);   % модуль Юнга
 
 cs_0=sqrt((E+4/3*mu)/rho_0);
 
-h=1.4*(m/rho_0)^(1/2);%k увеличен
+h=1.8*(m/rho_0)^(1/2);%k увеличен
 dt=0.1*h/(cs_0+v_0);
 dh=0.0000001;
-eps1=0;%-100;
+eps1=-1/8;%-100;
 eps2=0;%-50;%1/5;
 
 V=m/rho_0*ones(N,1);%m/rho_0;
@@ -53,7 +53,7 @@ SIG=ComputeStress(F,mu,k,N);
 W_cor=zeros(N,N);
 nabla_W_cor=zeros(2,N,N);
 Hessian_W_cor=zeros(2,N,N);
-
+ss1=load('TopModdleDispxDispy.txt');
 [W_cor,nabla_W_cor_0,Hessian_W_cor]=ComputeW_final(x,V,N,h,dh);
 for n = 1:fix(Time/dt)
     L=zeros(2,2,N);
@@ -91,24 +91,29 @@ for n = 1:fix(Time/dt)
       
       for i=1:sqn:(sqn*sqn-sqn+1)
           x(1,i)=X_old(1,i);
-      end
-      for i=sqn:sqn:(sqn*sqn)
-          x(1,i)=X_old(1,i)+X_old(1,i)*(n*dt/Time)^2;
+        %  x(1,i+1)=X_old(1,i+1);
       end
       
-      U=ComputeEnergy(F,mu,k,N);
-      Energy=0;
-      U_energy = 0;
-      T_energy = 0;
-      for i=1:N
-          % Energy=Energy+U(i)*V_0(i)+1/2*rho_0*V_0(i)*dot(v(1:2,i),v(1:2,i));%+U(i)*V(i)
-          U_energy = U_energy + U(i)*V_0(i);
-          %T_energy = T_energy + 1/2*rho_0*V_0(i)*dot(v(1:2,i),v(1:2,i)); 
-          T_energy = T_energy + 1/2*rho_0*V_0(i)*(v(1,i)^2+ v(2,i)^2);
+      for i=sqn:sqn:(sqn*sqn)
+          x(1,i)=X_old(1,i)+X_old(1,i)*(n*dt/Time)^2;
+        %  x(1,i-1)=X_old(1,i-1)+X_old(1,i-1)*(n*dt/Time)^2;
       end
-      U_time(n)=U_energy;%potential energy
-      T_time(n)= T_energy;
-      Energy_time(n)=U_energy + T_energy;
+      
+   %   U=ComputeEnergy(F,mu,k,N);
+   %   Energy=0;
+   %   U_energy = 0;
+   %   T_energy = 0;
+    %  for i=1:N
+          % Energy=Energy+U(i)*V_0(i)+1/2*rho_0*V_0(i)*dot(v(1:2,i),v(1:2,i));%+U(i)*V(i)
+    %      U_energy = U_energy + U(i)*V_0(i);
+          %T_energy = T_energy + 1/2*rho_0*V_0(i)*dot(v(1:2,i),v(1:2,i)); 
+    %      T_energy = T_energy + 1/2*rho_0*V_0(i)*(v(1,i)^2+ v(2,i)^2);
+    %  end
+    %  U_time(n)=U_energy;%potential energy
+   %   T_time(n)= T_energy;
+   %   Energy_time(n)=U_energy + T_energy;
+      coord_midle_x(n)=x(1,sqn*sqn-fix(sqn/2))-X_old(1,sqn*sqn-fix(sqn/2));
+      coord_midle_y(n)=x(2,sqn*sqn-fix(sqn/2))-X_old(2,sqn*sqn-fix(sqn/2));
       time(n)=n*dt;
 %         subplot(2,2,1);
 %         x_coord =time;
@@ -126,6 +131,7 @@ for n = 1:fix(Time/dt)
      plotmy=myplot(x,V,F,N,SIG,l,v,Energy_time,time);%%n,im,frame,map,fig);
       life_time=n*dt;
 end
+plot( time, coord_midle_x,time, coord_midle_y,ss1(:,2),ss1(:,3),'--');
 % x_coord =time;
 % y_coord = Energy_time;
 % subplot(2,2,1);
