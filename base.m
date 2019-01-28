@@ -1,16 +1,16 @@
 clear;    
 
-% fig = figure();
+ fig = figure();
 % % создание первого пустого кадра
-% set(fig,'Position',[350,200,700,700]);
-% frame = getframe(fig);
-% [im,map] = rgb2ind(frame.cdata,4);
-% imwrite(im,map,'animation3.gif','DelayTime',0,'Loopcount',inf);
+ set(fig,'Position',[350,200,700,700]);
+ frame = getframe(fig);
+ [im,map] = rgb2ind(frame.cdata,4);
+ imwrite(im,map,'animation3.gif','DelayTime',0,'Loopcount',inf);
 
 rho_0 =3;
 v_0 = 1;
-Time = 1.5;
-sqn=5;
+Time = 10;
+sqn=10;
 l=1;
 N=sqn*sqn;
 S=l*l;
@@ -23,10 +23,10 @@ E=9*k*mu/(3*k+mu);   % модуль Юнга
 
 cs_0=sqrt((E+4/3*mu)/rho_0);
 
-h=1.8*(m/rho_0)^(1/2);%k увеличен
+h=2*(m/rho_0)^(1/2);%k увеличен
 dt=0.1*h/(cs_0+v_0);
 dh=0.0000001;
-eps1=-1/8;%-100;
+eps1=0;%-100;
 eps2=0;%-50;%1/5;
 
 V=m/rho_0*ones(N,1);%m/rho_0;
@@ -55,6 +55,8 @@ nabla_W_cor=zeros(2,N,N);
 Hessian_W_cor=zeros(2,N,N);
 ss1=load('TopModdleDispxDispy.txt');
 [W_cor,nabla_W_cor_0,Hessian_W_cor]=ComputeW_final(x,V,N,h,dh);
+
+
 for n = 1:fix(Time/dt)
     L=zeros(2,2,N);
 %     if(fix(n/200)==n/200)
@@ -95,7 +97,7 @@ for n = 1:fix(Time/dt)
       end
       
       for i=sqn:sqn:(sqn*sqn)
-          x(1,i)=X_old(1,i)+X_old(1,i)*(n*dt/Time)^2;
+          x(1,i)=X_old(1,i)+X_old(1,i)*0.5*(n*dt/Time)^2;
         %  x(1,i-1)=X_old(1,i-1)+X_old(1,i-1)*(n*dt/Time)^2;
       end
       
@@ -128,7 +130,7 @@ for n = 1:fix(Time/dt)
 %         y_coord = Energy_time;
 %         plot(x_coord,y_coord);
 %          pause(0.0000001);
-     plotmy=myplot(x,V,F,N,SIG,l,v,Energy_time,time);%%n,im,frame,map,fig);
+     plotmy=myplot(x,V,F,N,SIG,l,v,Energy_time,time,n,im,frame,map,fig);
       life_time=n*dt;
 end
 plot( time, coord_midle_x,time, coord_midle_y,ss1(:,2),ss1(:,3),'--');
